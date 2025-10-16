@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><!DOCTYPE html>
+        <html>
+        <head>
+        <title>Weather Service</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .search-box { margin-bottom: 20px; }
+        input[type="text"] { padding: 10px; width: 300px; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .weather-info { margin: 20px 0; padding: 20px; border: 1px solid #ddd; }
+        .chart { text-align: center; margin: 20px 0; }
+        .cache-info { color: #666; font-style: italic; }
+        .error { color: red; padding: 10px; background: #ffe6e6; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Weather Service</h1>
+
+    <div class="search-box">
+        <input type="text" id="cityInput" placeholder="Enter city name (e.g., Moscow, London)" />
+        <button onclick="getWeather()">Get Weather</button>
+    </div>
+
+    <div id="weatherResult"></div>
+</div>
+
+<script>
+    async function getWeather() {
+        const city = document.getElementById('cityInput').value.trim();
+        const resultDiv = document.getElementById('weatherResult');
+
+        if (!city) {
+            resultDiv.innerHTML = '<div class="error">Please enter a city name</div>';
+            return;
+        }
+
+        try {
+            resultDiv.innerHTML = '<div>Loading...</div>';
+
+            const response = await fetch(`http://localhost:8080/weather?city=${encodeURIComponent(city)}`);
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Unknown error');
+            }
+
+            displayWeather(data);
+        } catch (error) {
+            resultDiv.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+        }
+    }
+
+    function displayWeather(data) {
+        const weather = data.weather;
+        const resultDiv = document.getElementById('weatherResult');
+
+        resultDiv.innerHTML = `
+                <div class="weather-info">
+                    <h2>Weather in ${weather.city}</h2>
+                    <p><strong>Coordinates:</strong> ${weather.latitude.toFixed(4)}, ${weather.longitude.toFixed(4)}</p>
+                    <p class="cache-info">${data.fromCache ? 'Data from cache' : 'Fresh data from API'}</p>
+                    
+                    <div class="chart">
+                        <h3>Temperature Chart (24 hours)</h3>
+                        <img src="${data.chart}" alt="Temperature Chart" style="max-width: 100%;" />
+                    </div>
+                    
+                    <div class="hourly-data">
+                        <h3>Hourly Temperature Data</h3>
+                        <table border="1" style="border-collapse: collapse; width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Temperature (°C)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${weather.hourly.time.slice(0, 24).map((time, index) => `
+                                    <tr>
+                                        <td>${time.substring(11, 16)}</td>
+                                        <td>${weather.hourly.temperature_2m[index].toFixed(1)}°C</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+    }
+
+    document.getElementById('cityInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            getWeather();
+        }
+    });
+</script>
+</body>
+</html>

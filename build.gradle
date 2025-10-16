@@ -1,0 +1,29 @@
+plugins {
+    id 'java'
+}
+
+group = 'kos.ru'
+version = '1.0.1'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.projectlombok:lombok:1.18.38'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.15.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+    implementation 'redis.clients:jedis:4.4.6'
+    implementation 'org.jfree:jfreechart:1.5.4'
+    implementation 'org.slf4j:slf4j-simple:2.0.7'
+
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    annotationProcessor 'org.projectlombok:lombok:1.18.38'
+}
+
+test {
+    useJUnitPlatform()
+}

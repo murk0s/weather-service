@@ -1,0 +1,13 @@
+services:
+  redis:
+    image: redis:7.2-alpine
+    container_name: weather-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
