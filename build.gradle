@@ -1,9 +1,22 @@
 plugins {
     id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
 }
 
 group = 'kos.ru'
 version = '1.0.1'
+
+application {
+    mainClass = 'com.weather.server.SimpleHttpServer'
+}
+
+shadowJar {
+    archiveFileName = 'app-shadow.jar'
+    manifest {
+        attributes 'Main-Class': 'com.weather.server.SimpleHttpServer'
+    }
+}
 
 repositories {
     mavenCentral()

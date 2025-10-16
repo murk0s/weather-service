@@ -44,7 +44,7 @@
         try {
             resultDiv.innerHTML = '<div>Loading...</div>';
 
-            const response = await fetch(`http://localhost:8080/weather?city=${encodeURIComponent(city)}`);
+            const response = await fetch(`http://localhost:8082/weather?city=${encodeURIComponent(city)}`);
             const data = await response.json();
 
             if (!response.ok) {

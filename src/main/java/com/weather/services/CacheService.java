@@ -16,7 +16,7 @@ public class CacheService {
 
     public CacheService() {
         JedisPoolConfig poolConfig = new JedisPoolConfig();
-        this.jedisPool = new JedisPool(poolConfig, "localhost", 6379);
+        this.jedisPool = new JedisPool(poolConfig, "redis", 6379);
         this.objectMapper = new ObjectMapper();
     }
 
